@@ -24,7 +24,7 @@ intents = discord.Intents.default()
 intents.message_content = True
 bot = discord.Bot(intents=intents)
 
-timeout = 30
+
 
 image_types = ["image/png", "image/jpeg", "image/aviv", "image/webp", "image/svg+xml"]
 
@@ -113,7 +113,7 @@ async def on_message(message):
                 description=response.choices[0].message.content
                 # Create and send a single, random reminder message
                 # Pick a random reminder message and combine it with the tutorial_string and other components
-                message_reminder = f"{random.choice(reminder_texts)}\n Here is an AI-generated description for now:\n {description}\n\n{tutorial_string}:bomb: This message will self-destruct in {str(timeout)}s."
+                message_reminder = f"{random.choice(reminder_texts)}\n Here is an AI-generated description for now:\n {description}\n\n{tutorial_string}"
 
                 # Include a random tip in every other reminder message
                 # so people can get informed on good alt text over time
