@@ -11,7 +11,6 @@ from stats import handle_stats
 from openai import OpenAI
 
 load_dotenv()
-client = OpenAI()
 
 if "TOKEN" not in environ:
     raise RuntimeError("TOKEN environment variable not set, exiting.")
@@ -19,11 +18,11 @@ if "OPENAI_API_KEY" not in environ:
     raise RuntimeError("OpenAI API Key not set, exiting.")
 
 __token__ = environ.get("TOKEN")
+client = OpenAI()
 
 intents = discord.Intents.default()
 intents.message_content = True
 bot = discord.Bot(intents=intents)
-
 
 
 image_types = ["image/png", "image/jpeg", "image/aviv", "image/webp", "image/svg+xml"]
