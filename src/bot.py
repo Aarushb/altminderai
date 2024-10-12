@@ -110,20 +110,10 @@ async def on_message(message):
                     ],
                     max_tokens=500,
                 )
-                description=response.choices[0]
+                description=response.choices[0].message.content
                 # Create and send a single, random reminder message
                 # Pick a random reminder message and combine it with the tutorial_string and other components
-                message_reminder = (
-                    random.choice(reminder_texts)
-                    + "\n"
-                    +"Here is an AI-generated description for now:\n"
-                    +description
-                    +"\n\n"
-                    + tutorial_string
-                    + " :bomb: This message will self-destruct in "
-                    + str(timeout)
-                    + "s."
-                )
+                message_reminder = f"{random.choice(reminder_texts)}\n Here is an AI-generated description for now:\n {description}\n\n{tutorial_string}:bomb: This message will self-destruct in {str(timeout)}s."
 
                 # Include a random tip in every other reminder message
                 # so people can get informed on good alt text over time
@@ -137,8 +127,8 @@ async def on_message(message):
                 message = await message.reply(embed=embed)
 
                 # Wait for $timeout seconds, then delete the message.
-                await asyncio.sleep(timeout)
-                await message.delete()
+                #await asyncio.sleep(timeout)
+                #await message.delete()
                 # Send only one reminder per message to avoid spam.
                 break
 
