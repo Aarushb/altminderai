@@ -78,26 +78,8 @@ async def on_message(message):
 
     for attachment in message.attachments:
         if attachment.content_type in image_types:
-            response = client.chat.completions.create(
-                model="gpt-4o",
-                messages=[
-                    {
-                        "role": "user",
-                        "content": [
-                            {"type": "text", "text": "Describe the image in a way that helps a blind or visually impaired person visualize it. Begin with a general overview, then focus on the key elements and details. Use vivid and imaginative language, including comparisons and examples that relate to common experiences or familiar shapes. Highlight important colors, emotions, and actions if applicable. Structure your description clearly to enhance understanding and mental imagery. You may use basic Discord-supported markdown (like *italics*, **bold**, codeblocks, blockquotes, etc.) to emphasize important points, but only when it would enhance understanding. Ensure the entire description is concise and does not exceed 2000 characters."},
-                        {
-                            "type": "image_url",
-                            "image_url": {
-                                "url": attachment.url,
-                                },
-                            },
-                        ],
-                    }
-                ],
-                max_tokens=500,
-            )
 
-            print(response.choices[0])
+
             # Check if the image has a description.
             if not attachment.description:
                 # Increase the statistics of how many times the bot has been reminding about alt text.
@@ -110,12 +92,33 @@ async def on_message(message):
                         + " servers."
                     )
                 )
-
+                response = client.chat.completions.create(
+                    model="gpt-4o",
+                    messages=[
+                        {
+                            "role": "user",
+                            "content": [
+                                {"type": "text", "text": "Describe the image in a way that helps a blind or visually impaired person visualize it. Begin with a general overview, then focus on the key elements and details. Use vivid and imaginative language, including comparisons and examples that relate to common experiences or familiar shapes. Highlight important colors, emotions, and actions if applicable. Structure your description clearly to enhance understanding and mental imagery. You may use basic Discord-supported markdown (like *italics*, **bold**, codeblocks, blockquotes, etc.) to emphasize important points, but only when it would enhance understanding. Ensure the entire description is concise and does not exceed 2000 characters."},
+                            {
+                                "type": "image_url",
+                                "image_url": {
+                                    "url": attachment.url,
+                                    },
+                                },
+                            ],
+                        }
+                    ],
+                    max_tokens=500,
+                )
+                description=response.choices[0]
                 # Create and send a single, random reminder message
                 # Pick a random reminder message and combine it with the tutorial_string and other components
                 message_reminder = (
-                    reminder_texts[random.randint(0, len(reminder_texts) - 1)]
-                    + "\n\n"
+                    random.choice(reminder_texts)
+                    + "\n"
+                    +"Here is an AI-generated description for now:\n"
+                    +description
+                    +"\n\n"
                     + tutorial_string
                     + " :bomb: This message will self-destruct in "
                     + str(timeout)
