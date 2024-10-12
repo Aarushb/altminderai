@@ -8,11 +8,15 @@ import discord
 import random
 import asyncio
 from stats import handle_stats
+from openai import OpenAI
 
 load_dotenv()
+client = OpenAI()
 
 if "TOKEN" not in environ:
     raise RuntimeError("TOKEN environment variable not set, exiting.")
+if "OPENAI_API_KEY" not in environ:
+    raise RuntimeError("OpenAI API Key not set, exiting.")
 
 __token__ = environ.get("TOKEN")
 
@@ -74,6 +78,27 @@ async def on_message(message):
 
     for attachment in message.attachments:
         if attachment.content_type in image_types:
+            print(attachment.url)
+            response = client.chat.completions.create(
+                model="gpt-4o",
+                messages=[
+                    {
+                        "role": "user",
+                        "content": [
+                            {"type": "text", "text": "Describe the image in a way that helps a blind or visually impaired person visualize it. Begin with a general overview, then focus on the key elements and details. Use vivid and imaginative language, including comparisons and examples that relate to common experiences or familiar shapes. Highlight important colors, emotions, and actions if applicable. Structure your description clearly to enhance understanding and mental imagery. You may use basic Discord-supported markdown (like *italics*, **bold**, codeblocks, blockquotes, etc.) to emphasize important points, but only when it would enhance understanding. Ensure the entire description is concise and does not exceed 2000 characters."},
+                        {
+                            "type": "image_url",
+                            "image_url": {
+                                "url": attachment.url,
+                                },
+                            },
+                        ],
+                    }
+                ],
+                max_tokens=500,
+            )
+
+            print(response.choices[0])
             # Check if the image has a description.
             if not attachment.description:
                 # Increase the statistics of how many times the bot has been reminding about alt text.
