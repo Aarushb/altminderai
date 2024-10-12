@@ -78,7 +78,6 @@ async def on_message(message):
 
     for attachment in message.attachments:
         if attachment.content_type in image_types:
-            print(attachment.url)
             response = client.chat.completions.create(
                 model="gpt-4o",
                 messages=[
